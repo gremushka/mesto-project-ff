@@ -5,7 +5,7 @@ addCards(placesList, initialCards);
 
 function addCards(element, cards) {
   for (i = 0; i < cards.length; i++) {
-    element.append(createCard(cards[i], cardTemplate, deleteCard));
+    element.append(createCard(cards[i], cardTemplate, deleteCard);
   }
 }
 
@@ -18,10 +18,12 @@ function createCard(cardContent, cardTemplate, removeFunction) {
   cardImage.alt = cardContent.name;
 
   const deleteButton = card.querySelector(".card__delete-button");
-  deleteButton.addEventListener("click", removeFunction);
+  deleteButton.addEventListener("click", () => removeFunction(card)); // Обращаемся к обработчику как к анонимной функции, чтобы передать данные
+
   return card;
 }
 
-function deleteCard(event) {
-  event.target.closest(".places__item").remove();
-}
+function deleteCard(cardDelete) { //Имя параметра не обязательно должно совпадать с именем объекта
+
+  cardDelete.remove(); 
+} 
