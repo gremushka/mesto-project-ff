@@ -23,5 +23,5 @@ function createCard(cardContent, cardTemplate, removeFunction) {
 }
 
 function deleteCard(event) {
-  event.target.parentNode.remove();
+  event.target.closest(".places__item").remove();
 }
