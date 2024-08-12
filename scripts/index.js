@@ -5,7 +5,7 @@ addCards(placesList, initialCards);
 
 function addCards(element, cards) {
   for (i = 0; i < cards.length; i++) {
-    element.append(createCard(cards[i], cardTemplate, deleteCard);
+    element.append(createCard(cards[i], cardTemplate, deleteCard));
   }
 }
 
