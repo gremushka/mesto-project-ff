@@ -9,8 +9,8 @@ function closeModal(element) {
 }
 
 function closeByEscape(event) {
-  const modal = document.querySelector(".popup_is-opened");
   if (event.code === "Escape") {
+    const modal = document.querySelector(".popup_is-opened");
     closeModal(modal);
   }
 }
