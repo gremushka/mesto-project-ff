@@ -108,16 +108,23 @@ function changeProfile(event) {
   event.preventDefault();
   profileDescription.textContent = profileForm.elements.description.value;
   profileTitle.textContent = profileForm.elements.name.value;
+  const button = event.target.querySelector('.popup__button')
+  button.textContent='Сохранение...'
   patchProfile(
-    profileForm.elements.name.value,
+    profileForm.elements.name.value, 
     profileForm.elements.description.value
   ).then((res) => {
     if (res.ok) {
       return res.json();
     }
-  });
-  closeModal(popupEditProfile, validationConfig);
-  profileForm.reset();
+  }).then(()=>{
+    closeModal(popupEditProfile, validationConfig);
+    profileForm.reset();
+  }
+
+  );
+  
+
   clearValidation(profileForm, validationConfig);
 }
 
@@ -127,7 +134,10 @@ function addCard(event) {
   cardData.name = newCardForm.elements["place-name"].value;
   cardData.link = newCardForm.elements["link"].value;
   const form = event.target;
-  postCard(cardData).then((data) => {
+  const button = form.querySelector('.popup__button')
+  button.textContent='Сохранение...'
+  postCard(cardData)
+  .then((data) => {
     closeModal(popupNewCard, validationConfig);
     placesList.prepend(
       createCard(
@@ -139,23 +149,29 @@ function addCard(event) {
         currentUserId
       )
     );
-
+    
     newCardForm.reset();
     clearValidation(newCardForm, validationConfig);
+
   });
 }
 function changeAvatar(event) {
   event.preventDefault();
   const avatar = avatarForm.elements["avatar"].value;
+  const button = event.target.querySelector('.popup__button')
+  button.textContent='Сохранение...'
+
   patchAvatar(avatar).then((res) => {
     if (res.ok) {
       return res.json();
     }
-  });
-  closeModal(popupAvatar, validationConfig);
-  profileImg.style.backgroundImage = `url(${avatar})`;
-  avatarForm.reset();
-  clearValidation(avatarForm, validationConfig);
+  }).then(()=>{
+    closeModal(popupAvatar, validationConfig);
+    profileImg.style.backgroundImage = `url(${avatar})`;
+    avatarForm.reset();
+    clearValidation(avatarForm, validationConfig);
+  })
+
 }
 
 function addInitialCards(element, cardTemplate, cards) {

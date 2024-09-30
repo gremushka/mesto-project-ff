@@ -51,12 +51,12 @@ function likeCard(event) {
   if (event.target.classList.contains("card__like-button_is-active")) {
     deleteLike(cardId).then((data) => {
       event.target.textContent = data;
-      event.target.classList.toggle("card__like-button_is-active");
+      event.target.classList.remove("card__like-button_is-active");
     });
   } else {
     putLike(cardId).then((data) => {
       event.target.textContent = data;
-      event.target.classList.toggle("card__like-button_is-active");
+      event.target.classList.add("card__like-button_is-active");
     });
   }
 }
