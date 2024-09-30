@@ -1,3 +1,15 @@
 .popup__form {
   margin-top: 27px;
 }
+
+.popup__input_type_error {
+  border-bottom-color: red  !important;
+} 
+
+.popup__error_visible{
+  display: block;
+  min-height: 28px;
+  margin-top: 5px;
+  font-size: 12px;
+  color: red !important;
+}

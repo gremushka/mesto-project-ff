@@ -1,9 +1,12 @@
+import { putLike, deleteLike, deleteCard } from "./api.js";
+
 function createCard(
   cardContent,
   cardTemplate,
   removeFunction,
   likeFunction,
-  showFunction
+  showFunction,
+  currentUserId
 ) {
   const card = cardTemplate.querySelector(".card").cloneNode(true);
   card.querySelector(".card__title").textContent = cardContent.name;
@@ -14,20 +17,48 @@ function createCard(
   cardImage.addEventListener("click", () => showFunction(card));
 
   const deleteButton = card.querySelector(".card__delete-button");
-  deleteButton.addEventListener("click", () => removeFunction(card));
+
+  if (currentUserId == cardContent.owner._id) {
+    card.dataset.id = cardContent._id;
+    deleteButton.addEventListener("click", () => removeFunction(card));
+  } else {
+    deleteButton.remove();
+  }
 
   const likeButton = card.querySelector(".card__like-button");
+  likeButton.dataset.id = cardContent._id;
+
+  if (cardContent.likes.some((like) => like._id === currentUserId)) {
+    likeButton.classList.add("card__like-button_is-active");
+  }
+  likeButton.textContent = cardContent.likes.length;
   likeButton.addEventListener("click", likeFunction);
 
   return card;
 }
 
-function deleteCard(element) {
-  element.remove();
+function removeCard(element) {
+  console.log(element);
+  const cardId = element.dataset.id;
+  deleteCard(cardId).then(() => {
+    element.remove();
+  });
 }
 
 function likeCard(event) {
-  event.target.classList.toggle("card__like-button_is-active");
+  const cardId = event.target.dataset.id;
+
+  if (event.target.classList.contains("card__like-button_is-active")) {
+    deleteLike(cardId).then((data) => {
+      event.target.textContent = data;
+      event.target.classList.toggle("card__like-button_is-active");
+    });
+  } else {
+    putLike(cardId).then((data) => {
+      event.target.textContent = data;
+      event.target.classList.toggle("card__like-button_is-active");
+    });
+  }
 }
 
-export { createCard, deleteCard, likeCard };
+export { createCard, removeCard, likeCard };
