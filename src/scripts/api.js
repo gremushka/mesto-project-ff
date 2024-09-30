@@ -9,7 +9,10 @@ const apiConfig = {
 async function getUser() {
   return fetch(`${apiConfig.baseUrl}/users/me`, { headers: apiConfig.headers })
     .then((res) => {
-      return res.json();
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
     })
     .catch((err) => {
       console.log("Ошибка. Запрос профайла не выполнен");
@@ -19,7 +22,10 @@ async function getUser() {
 async function getInitialCards() {
   return fetch(`${apiConfig.baseUrl}/cards`, { headers: apiConfig.headers })
     .then((res) => {
-      return res.json();
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
     })
     .catch((err) => {
       console.log("Ошибка. Запрос карточек не выполнен");
@@ -38,6 +44,7 @@ async function patchProfile(name, info) {
       if (res.ok) {
         return res.json();
       }
+      return Promise.reject(`Ошибка: ${res.status}`);
     })
     .catch((err) => {
       console.log("Ошибка. Запрос изменения профайла не выполнен");
@@ -55,6 +62,7 @@ async function patchAvatar(avatar) {
       if (res.ok) {
         return res.json();
       }
+      return Promise.reject(`Ошибка: ${res.status}`);
     })
     .catch((err) => {
       console.log("Ошибка. Запрос изменения аватара не выполнен");
@@ -70,6 +78,7 @@ async function putLike(cardId) {
       if (res.ok) {
         return res.json();
       }
+      return Promise.reject(`Ошибка: ${res.status}`);
     })
     .then((data) => {
       return data.likes.length;
@@ -87,6 +96,7 @@ async function deleteLike(cardId) {
       if (res.ok) {
         return res.json();
       }
+      return Promise.reject(`Ошибка: ${res.status}`);
     })
     .then((data) => {
       return data.likes.length;
@@ -104,6 +114,7 @@ async function deleteCard(cardId) {
       if (res.ok) {
         return res.json();
       }
+      return Promise.reject(`Ошибка: ${res.status}`);
     })
     .catch((err) => {
       console.log("Ошибка. Запрос удаления карточки не выполнен");
@@ -122,6 +133,7 @@ async function postCard(cardContent) {
       if (res.ok) {
         return res.json();
       }
+      return Promise.reject(`Ошибка: ${res.status}`);
     })
     .catch((err) => {
       console.log("Ошибка. Запрос создания карточки не выполнен");
