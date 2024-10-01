@@ -45,15 +45,17 @@ const profileDescription = document.querySelector(".profile__description");
 const profileTitle = document.querySelector(".profile__title");
 const profileImg = document.querySelector(".profile__image");
 
+let currentUserId;
 
-const initialData = await Promise.all([getUser(), getInitialCards()])
-.catch(err => console.log('Ошибка начальных данных'));;
-
-const currentUserId = initialData[0]._id;
-
-
-showProfile(initialData[0]);
-addInitialCards(placesList, cardTemplate, initialData[1]);
+Promise.all([getUser(), getInitialCards()])
+  .then(([userData, cardsData]) => {
+    currentUserId = userData._id;
+    showProfile(userData);
+    addInitialCards(placesList, cardTemplate, cardsData);
+  })
+  .catch((err) => {
+    console.log("Ошибка получения исходных данных.");
+  });
 
 popups.forEach((element) => {
   element.classList.add("popup_is-animated");
@@ -72,7 +74,6 @@ popups.forEach((element) => {
         form.reset();
       }
     }
-
   });
 });
 
@@ -125,13 +126,17 @@ function changeProfile(event) {
   patchProfile(
     profileForm.elements.name.value,
     profileForm.elements.description.value
-  ).then(() => {
+  )
+    .then(() => {
       closeModal(popupEditProfile, validationConfig);
       profileForm.reset();
-    }).catch((err) => {
+    })
+    .catch((err) => {
       console.log("Ошибка. Запрос редактирования профайла не выполнен");
     })
-    .finally(()=>{button.textContent = "Сохранить";});
+    .finally(() => {
+      button.textContent = "Сохранить";
+    });
 
   clearValidation(profileForm, validationConfig);
 }
@@ -144,24 +149,28 @@ function addCard(event) {
   const form = event.target;
   const button = form.querySelector(".popup__button");
   button.textContent = "Сохранение...";
-  postCard(cardData).then((data) => {
-    closeModal(popupNewCard, validationConfig);
-    placesList.prepend(
-      createCard(
-        data,
-        cardTemplate,
-        removeCard,
-        likeCard,
-        showCard,
-        currentUserId
-      )
-    )
-    newCardForm.reset();
-    clearValidation(newCardForm, validationConfig);
-  }).catch((err) => {
-    console.log("Ошибка. Запрос создания карточки не выполнен");
-  })
-  .finally(()=>{button.textContent = "Сохранить";});;;
+  postCard(cardData)
+    .then((data) => {
+      closeModal(popupNewCard, validationConfig);
+      placesList.prepend(
+        createCard(
+          data,
+          cardTemplate,
+          removeCard,
+          likeCard,
+          showCard,
+          currentUserId
+        )
+      );
+      newCardForm.reset();
+      clearValidation(newCardForm, validationConfig);
+    })
+    .catch((err) => {
+      console.log("Ошибка. Запрос создания карточки не выполнен");
+    })
+    .finally(() => {
+      button.textContent = "Сохранить";
+    });
 }
 function changeAvatar(event) {
   event.preventDefault();
@@ -175,10 +184,13 @@ function changeAvatar(event) {
       profileImg.style.backgroundImage = `url(${avatar})`;
       avatarForm.reset();
       clearValidation(avatarForm, validationConfig);
-    }).catch((err) => {
+    })
+    .catch((err) => {
       console.log("Ошибка. Запрос редактирования аватара не выполнен");
     })
-    .finally(()=>{button.textContent = "Сохранить";});;
+    .finally(() => {
+      button.textContent = "Сохранить";
+    });
 }
 
 function addInitialCards(element, cardTemplate, cards) {
