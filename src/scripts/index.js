@@ -45,9 +45,12 @@ const profileDescription = document.querySelector(".profile__description");
 const profileTitle = document.querySelector(".profile__title");
 const profileImg = document.querySelector(".profile__image");
 
-const initialData = await Promise.all([getUser(), getInitialCards()]);
+
+const initialData = await Promise.all([getUser(), getInitialCards()])
+.catch(err => console.log('Ошибка начальных данных'));;
 
 const currentUserId = initialData[0]._id;
+
 
 showProfile(initialData[0]);
 addInitialCards(placesList, cardTemplate, initialData[1]);
@@ -56,11 +59,20 @@ popups.forEach((element) => {
   element.classList.add("popup_is-animated");
   element.addEventListener("mousedown", (event) => {
     if (event.target.classList.contains("popup_is-opened")) {
-      closeModal(element, validationConfig);
+      closeModal(element);
+      const form = element.querySelector(validationConfig.formSelector);
+      if (form) {
+        form.reset();
+      }
     }
     if (event.target.classList.contains("popup__close")) {
-      closeModal(element, validationConfig);
+      closeModal(element);
+      const form = element.querySelector(validationConfig.formSelector);
+      if (form) {
+        form.reset();
+      }
     }
+
   });
 });
 
@@ -108,22 +120,18 @@ function changeProfile(event) {
   event.preventDefault();
   profileDescription.textContent = profileForm.elements.description.value;
   profileTitle.textContent = profileForm.elements.name.value;
-  const button = event.target.querySelector('.popup__button')
-  button.textContent='Сохранение...'
+  const button = event.target.querySelector(".popup__button");
+  button.textContent = "Сохранение...";
   patchProfile(
-    profileForm.elements.name.value, 
+    profileForm.elements.name.value,
     profileForm.elements.description.value
-  ).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-  }).then(()=>{
-    closeModal(popupEditProfile, validationConfig);
-    profileForm.reset();
-  }
-
-  );
-  
+  ).then(() => {
+      closeModal(popupEditProfile, validationConfig);
+      profileForm.reset();
+    }).catch((err) => {
+      console.log("Ошибка. Запрос редактирования профайла не выполнен");
+    })
+    .finally(()=>{button.textContent = "Сохранить";});
 
   clearValidation(profileForm, validationConfig);
 }
@@ -134,10 +142,9 @@ function addCard(event) {
   cardData.name = newCardForm.elements["place-name"].value;
   cardData.link = newCardForm.elements["link"].value;
   const form = event.target;
-  const button = form.querySelector('.popup__button')
-  button.textContent='Сохранение...'
-  postCard(cardData)
-  .then((data) => {
+  const button = form.querySelector(".popup__button");
+  button.textContent = "Сохранение...";
+  postCard(cardData).then((data) => {
     closeModal(popupNewCard, validationConfig);
     placesList.prepend(
       createCard(
@@ -148,30 +155,30 @@ function addCard(event) {
         showCard,
         currentUserId
       )
-    );
-    
+    )
     newCardForm.reset();
     clearValidation(newCardForm, validationConfig);
-
-  });
+  }).catch((err) => {
+    console.log("Ошибка. Запрос создания карточки не выполнен");
+  })
+  .finally(()=>{button.textContent = "Сохранить";});;;
 }
 function changeAvatar(event) {
   event.preventDefault();
   const avatar = avatarForm.elements["avatar"].value;
-  const button = event.target.querySelector('.popup__button')
-  button.textContent='Сохранение...'
+  const button = event.target.querySelector(".popup__button");
+  button.textContent = "Сохранение...";
 
-  patchAvatar(avatar).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-  }).then(()=>{
-    closeModal(popupAvatar, validationConfig);
-    profileImg.style.backgroundImage = `url(${avatar})`;
-    avatarForm.reset();
-    clearValidation(avatarForm, validationConfig);
-  })
-
+  patchAvatar(avatar)
+    .then(() => {
+      closeModal(popupAvatar, validationConfig);
+      profileImg.style.backgroundImage = `url(${avatar})`;
+      avatarForm.reset();
+      clearValidation(avatarForm, validationConfig);
+    }).catch((err) => {
+      console.log("Ошибка. Запрос редактирования аватара не выполнен");
+    })
+    .finally(()=>{button.textContent = "Сохранить";});;
 }
 
 function addInitialCards(element, cardTemplate, cards) {

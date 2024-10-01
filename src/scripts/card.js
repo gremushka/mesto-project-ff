@@ -40,24 +40,36 @@ function createCard(
 function removeCard(element) {
   console.log(element);
   const cardId = element.dataset.id;
-  deleteCard(cardId).then(() => {
-    element.remove();
-  });
+  deleteCard(cardId)
+    .then(() => {
+      element.remove();
+    })
+    .catch((err) => {
+      console.log("Ошибка. Запрос удаления карточки не выполнен");
+    });
 }
 
 function likeCard(event) {
   const cardId = event.target.dataset.id;
 
   if (event.target.classList.contains("card__like-button_is-active")) {
-    deleteLike(cardId).then((data) => {
-      event.target.textContent = data;
-      event.target.classList.remove("card__like-button_is-active");
-    });
+    deleteLike(cardId)
+      .then((data) => {
+        event.target.textContent = data;
+        event.target.classList.remove("card__like-button_is-active");
+      })
+      .catch((err) => {
+        console.log("Ошибка. Запрос удаления лайка не выполнен");
+      });
   } else {
-    putLike(cardId).then((data) => {
-      event.target.textContent = data;
-      event.target.classList.add("card__like-button_is-active");
-    });
+    putLike(cardId)
+      .then((data) => {
+        event.target.textContent = data;
+        event.target.classList.add("card__like-button_is-active");
+      })
+      .catch((err) => {
+        console.log("Ошибка. Запрос установки лайка не выполнен");
+      });
   }
 }
 

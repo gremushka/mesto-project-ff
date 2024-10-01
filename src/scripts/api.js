@@ -5,31 +5,23 @@ const apiConfig = {
     "Content-Type": "application/json",
   },
 };
+function testResult(res) {
+  if (res.ok) {
+    return res.json();
+  }
+  return Promise.reject(`Ошибка: ${res.status}`);
+}
 
 async function getUser() {
-  return fetch(`${apiConfig.baseUrl}/users/me`, { headers: apiConfig.headers })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch((err) => {
-      console.log("Ошибка. Запрос профайла не выполнен");
-    });
+  return fetch(`${apiConfig.baseUrl}/users/me`, {
+    headers: apiConfig.headers,
+  }).then(testResult);
 }
 
 async function getInitialCards() {
-  return fetch(`${apiConfig.baseUrl}/cards`, { headers: apiConfig.headers })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch((err) => {
-      console.log("Ошибка. Запрос карточек не выполнен");
-    });
+  return fetch(`${apiConfig.baseUrl}/cards`, {
+    headers: apiConfig.headers,
+  }).then(testResult);
 }
 async function patchProfile(name, info) {
   return fetch(`${apiConfig.baseUrl}/users/me`, {
@@ -39,16 +31,7 @@ async function patchProfile(name, info) {
       name: name,
       about: info,
     }),
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch((err) => {
-      console.log("Ошибка. Запрос изменения профайла не выполнен");
-    });
+  }).then(testResult);
 }
 async function patchAvatar(avatar) {
   return fetch(`${apiConfig.baseUrl}/users/me/avatar`, {
@@ -57,16 +40,7 @@ async function patchAvatar(avatar) {
     body: JSON.stringify({
       avatar: avatar,
     }),
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch((err) => {
-      console.log("Ошибка. Запрос изменения аватара не выполнен");
-    });
+  }).then(testResult);
 }
 
 async function putLike(cardId) {
@@ -74,17 +48,9 @@ async function putLike(cardId) {
     method: "PUT",
     headers: apiConfig.headers,
   })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    .then(testResult)
     .then((data) => {
       return data.likes.length;
-    })
-    .catch((err) => {
-      console.log("Ошибка. Запрос проставления like не выполнен");
     });
 }
 async function deleteLike(cardId) {
@@ -92,33 +58,16 @@ async function deleteLike(cardId) {
     method: "DELETE",
     headers: apiConfig.headers,
   })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    .then(testResult)
     .then((data) => {
       return data.likes.length;
-    })
-    .catch((err) => {
-      console.log("Ошибка. Запрос удаления like не выполнен");
     });
 }
 async function deleteCard(cardId) {
   return fetch(`${apiConfig.baseUrl}/cards/${cardId}`, {
     method: "DELETE",
     headers: apiConfig.headers,
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch((err) => {
-      console.log("Ошибка. Запрос удаления карточки не выполнен");
-    });
+  }).then(testResult);
 }
 async function postCard(cardContent) {
   return fetch(`${apiConfig.baseUrl}/cards`, {
@@ -128,16 +77,7 @@ async function postCard(cardContent) {
       name: cardContent.name,
       link: cardContent.link,
     }),
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch((err) => {
-      console.log("Ошибка. Запрос создания карточки не выполнен");
-    });
+  }).then(testResult);
 }
 export {
   getUser,
